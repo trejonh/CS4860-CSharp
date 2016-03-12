@@ -10,9 +10,9 @@ namespace Homework2
         }
     }
 
-    public class Greeter : IGreetThee.IGreetThee
+    public class Greeter : IGreetThee
     {
-        void IGreetThee.IGreetThee.SayHelloTo(string name)
+        public void SayHelloTo(string name)
         {
             Console.WriteLine("Hello, "+name);
         }
