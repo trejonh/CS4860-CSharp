@@ -1,7 +1,8 @@
 ﻿using System;
-using Microsoft.VisualStudio.TestPlatform.UnitTestFramework;
+using Homework2;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Homework2Tests
+namespace Homework2T
 {
     [TestClass]
     public class UnitTest1
@@ -11,21 +12,14 @@ namespace Homework2Tests
         {
             try
             {
-                Greeter greeter = new Greeter();
+                IGreetThee greeter = new Greeter();
+                greeter.SayHelloTo(null);
                 Assert.Fail();
             }
             catch (ArgumentNullException e)
             {
                 Assert.IsNotNull(e);
             }
-        }
-
-        [TestMethod]
-        public void SayHelloTo_InvalidNameProvided_ReturnsArgumentException()
-        {
-            IGreetThee greeter = new Greeter();
-            int name = 0;
-            Assert.ThrowsException<ArugmentException>()
         }
     }
 }

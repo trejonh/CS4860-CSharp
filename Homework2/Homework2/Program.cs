@@ -14,7 +14,10 @@ namespace Homework2
     {
         public void SayHelloTo(string name)
         {
-            Console.WriteLine("Hello, "+name);
+            if(name == null)
+                throw new ArgumentNullException();
+            else
+                Console.WriteLine("Hello, "+name);
         }
     }
 }
