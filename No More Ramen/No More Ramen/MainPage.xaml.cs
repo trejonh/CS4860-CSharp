@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Net;
+using System.Windows;
+using System.Runtime.Serialization;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
@@ -15,7 +18,7 @@ using Windows.UI.Xaml.Navigation;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=391641
 
-namespace Damn_You_Look_Fabulous
+namespace No_More_Ramen
 {
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
@@ -43,6 +46,11 @@ namespace Damn_You_Look_Fabulous
             // Windows.Phone.UI.Input.HardwareButtons.BackPressed event.
             // If you are using the NavigationHelper provided by some templates,
             // this event is handled for you.
+        }
+
+        private void SignUp_OnClick(object sender, RoutedEventArgs e)
+        {
+            this.Frame.Navigate(typeof (SignUpPage), null);
         }
     }
 }
