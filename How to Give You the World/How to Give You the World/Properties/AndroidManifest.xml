@@ -1,0 +1,5 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="How_to_Give_You_the_World.How_to_Give_You_the_World" android:versionCode="1" android:versionName="1.0">
+  <uses-sdk android:minSdkVersion="16" />
+  <application android:label="How_to_Give_You_the_World"></application>
+</manifest>
