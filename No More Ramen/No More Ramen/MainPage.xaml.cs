@@ -2,19 +2,13 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using System.Net;
-using System.Windows;
 using System.Runtime.Serialization;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
+using System.Xml;
+using Windows.Storage;
+using Windows.UI.Popups;
 using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using No_More_Ramen.Data;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=391641
 
@@ -23,20 +17,47 @@ namespace No_More_Ramen
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class MainPage : Page
+    public sealed partial class MainPage
     {
+        private List<UserData> _registeredUsers;
         public MainPage()
         {
-            this.InitializeComponent();
-
-            this.NavigationCacheMode = NavigationCacheMode.Required;
+            InitializeComponent();
+            NavigationCacheMode = NavigationCacheMode.Required;
+            Loaded += MainPage_Loaded;
         }
 
-        /// <summary>
-        /// Invoked when this page is about to be displayed in a Frame.
-        /// </summary>
-        /// <param name="e">Event data that describes how this page was reached.
-        /// This parameter is typically used to configure the page.</param>
+        private async void MainPage_Loaded(object sender, RoutedEventArgs e)
+        {
+            /*var settings = ApplicationData.Current.LocalSettings;
+            if (settings.Values["CheckLogin"] != null)
+                Frame.Navigate(typeof (PersonalScreen), null);
+            else
+            {*/
+                var localAppFolder = ApplicationData.Current.LocalFolder;
+                try
+                {
+                    var file = await localAppFolder.GetFileAsync("RegisteredUsers.txt");
+                    LoadRegisteredUsers(file);
+                }
+                catch (FileNotFoundException)
+                {
+                    await localAppFolder.CreateFileAsync("RegisteredUsers.txt",
+                        CreationCollisionOption.ReplaceExisting);
+                }
+            //}
+        }
+
+        private async void LoadRegisteredUsers(IStorageFile file)
+        {
+            using (var reader = await file.OpenReadAsync())
+            {
+                if (reader.Size <= 0) return;
+                var serializer = new DataContractSerializer(typeof(List<UserData>));
+                _registeredUsers =
+                    (List<UserData>)serializer.ReadObject(XmlReader.Create(reader.AsStreamForRead()));
+            }
+        }
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             // TODO: Prepare page for display here.
@@ -50,7 +71,23 @@ namespace No_More_Ramen
 
         private void SignUp_OnClick(object sender, RoutedEventArgs e)
         {
-            this.Frame.Navigate(typeof (SignUpPage), null);
+            Frame.Navigate(typeof (SignUpPage), null);
+        }
+
+        private async void Login_OnClick(object sender, RoutedEventArgs e)
+        {
+            if (UserName.Text == "" || PassWord.Password == "") return;
+            if (_registeredUsers.Any(user => user.UserName == UserName.Text && user.Password == PassWord.Password))
+            {
+                var settings = ApplicationData.Current.LocalSettings;
+                settings.Values["CheckLogin"] = "Login sucess";
+                Frame.Navigate(typeof (PersonalScreen), UserName.Text);
+            }
+            else
+            {
+                var md = new MessageDialog("Invalid username/password");
+                await md.ShowAsync();
+            }
         }
     }
 }

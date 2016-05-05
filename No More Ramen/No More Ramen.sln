@@ -5,17 +5,13 @@ VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "No More Ramen", "No More Ramen\No More Ramen.csproj", "{9DD7DCBA-7526-43E9-9B23-ED3795DCCCED}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "No More Ramen", "No More Ramen", "{31E3B4BB-7788-4B6F-B26F-EA9561E013E3}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Debug|ARM = Debug|ARM
-		Debug|x64 = Debug|x64
 		Debug|x86 = Debug|x86
 		Release|Any CPU = Release|Any CPU
 		Release|ARM = Release|ARM
-		Release|x64 = Release|x64
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
@@ -25,9 +21,6 @@ Global
 		{9DD7DCBA-7526-43E9-9B23-ED3795DCCCED}.Debug|ARM.ActiveCfg = Debug|ARM
 		{9DD7DCBA-7526-43E9-9B23-ED3795DCCCED}.Debug|ARM.Build.0 = Debug|ARM
 		{9DD7DCBA-7526-43E9-9B23-ED3795DCCCED}.Debug|ARM.Deploy.0 = Debug|ARM
-		{9DD7DCBA-7526-43E9-9B23-ED3795DCCCED}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{9DD7DCBA-7526-43E9-9B23-ED3795DCCCED}.Debug|x64.Build.0 = Debug|Any CPU
-		{9DD7DCBA-7526-43E9-9B23-ED3795DCCCED}.Debug|x64.Deploy.0 = Debug|Any CPU
 		{9DD7DCBA-7526-43E9-9B23-ED3795DCCCED}.Debug|x86.ActiveCfg = Debug|x86
 		{9DD7DCBA-7526-43E9-9B23-ED3795DCCCED}.Debug|x86.Build.0 = Debug|x86
 		{9DD7DCBA-7526-43E9-9B23-ED3795DCCCED}.Debug|x86.Deploy.0 = Debug|x86
@@ -37,17 +30,11 @@ Global
 		{9DD7DCBA-7526-43E9-9B23-ED3795DCCCED}.Release|ARM.ActiveCfg = Release|ARM
 		{9DD7DCBA-7526-43E9-9B23-ED3795DCCCED}.Release|ARM.Build.0 = Release|ARM
 		{9DD7DCBA-7526-43E9-9B23-ED3795DCCCED}.Release|ARM.Deploy.0 = Release|ARM
-		{9DD7DCBA-7526-43E9-9B23-ED3795DCCCED}.Release|x64.ActiveCfg = Release|Any CPU
-		{9DD7DCBA-7526-43E9-9B23-ED3795DCCCED}.Release|x64.Build.0 = Release|Any CPU
-		{9DD7DCBA-7526-43E9-9B23-ED3795DCCCED}.Release|x64.Deploy.0 = Release|Any CPU
 		{9DD7DCBA-7526-43E9-9B23-ED3795DCCCED}.Release|x86.ActiveCfg = Release|x86
 		{9DD7DCBA-7526-43E9-9B23-ED3795DCCCED}.Release|x86.Build.0 = Release|x86
 		{9DD7DCBA-7526-43E9-9B23-ED3795DCCCED}.Release|x86.Deploy.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{9DD7DCBA-7526-43E9-9B23-ED3795DCCCED} = {31E3B4BB-7788-4B6F-B26F-EA9561E013E3}
 	EndGlobalSection
 EndGlobal

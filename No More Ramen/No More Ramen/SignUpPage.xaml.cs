@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Windows.Storage;
 using System.Runtime.Serialization;
 using System.Text.RegularExpressions;
+using System.Xml;
 using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -20,7 +22,7 @@ namespace No_More_Ramen
     public sealed partial class SignUpPage
     {
         private string _usrGender = "";
-        private List<UserData> registeredUsers; 
+        private List<UserData> _registeredUsers; 
         public SignUpPage()
         {
             InitializeComponent();
@@ -31,20 +33,27 @@ namespace No_More_Ramen
 
         private async void SignUpPage_Loaded(Object sender, RoutedEventArgs e)
         {
-            StorageFolder localAppFolder = ApplicationData.Current.LocalFolder;
-            dynamic file;
+            var localAppFolder = ApplicationData.Current.LocalFolder;
             try
             {
-                file = await localAppFolder.GetFileAsync("RegisteredUsers.txt");
-                using (var reader = await file.OpenReadAsync())
-                {
-                    DataContractSerializer serializer = new DataContractSerializer(typeof(List<UserData>));
-                    registeredUsers = (List<UserData>) serializer.ReadObject(reader);
-                }
+                var file = await localAppFolder.GetFileAsync("RegisteredUsers.txt");
+                LoadUsers(file);
             }
             catch (FileNotFoundException)
             {
-                
+               await localAppFolder.CreateFileAsync("RegisteredUsers.txt",
+                   CreationCollisionOption.ReplaceExisting);
+            }
+        }
+
+        private async void LoadUsers(IStorageFile file)
+        {
+            using (var reader = await file.OpenReadAsync())
+            {
+                if (reader.Size <= 0) return;
+                var serializer = new DataContractSerializer(typeof(List<UserData>));
+                _registeredUsers =
+                    (List<UserData>)serializer.ReadObject(XmlReader.Create(reader.AsStreamForRead()));
             }
         }
 
@@ -59,104 +68,77 @@ namespace No_More_Ramen
 
         public void Gender_Checked(object sender, RoutedEventArgs e)
         {
-            RadioButton btn = (RadioButton) sender;
+            var btn = (RadioButton) sender;
             _usrGender = btn?.Content?.ToString();
         }
         private async void Register_Click(object sender, RoutedEventArgs e)
         {
-            MessageDialog md = new MessageDialog("");
-            //UserName Validation
-            if (!Regex.IsMatch(UserNameField.Text.Trim(), @"^[A-Za-z_][a-zA-Z0-9_\s]*$"))
+            var md = new MessageDialog("");
+            var validation = CheckForValidUserData();
+            if (validation != "valid")
             {
-                md.Content = "Invalid UserName";
+                md.Content = validation;
                 await md.ShowAsync();
+                return;
             }
-
-            //Password length Validation
-            else if (PasswordField.Password.Length < 6)
+            var nwUsr = new UserData
             {
-                md.Content = "Password length should be minimum of 6 characters!";
-                await md.ShowAsync();
-            }
-            //Gender Selection Empty Validation
-            else if (_usrGender == "")
+                FirstName = FirstNameField.Text,
+                LastName = LastNameField.Text,
+                UserName = UserNameField.Text,
+                Password = PasswordField.Password,
+                Dob = DOBField.Date,
+                College = CollegeField.Text,
+                Gender = _usrGender
+            };
+            if (_registeredUsers != null)
             {
-                md.Content = "Please select gender!";
-                await md.ShowAsync();
-            }
-            else if (FirstNameField.Text.Length == 0 || LastNameField.Text.Length == 0)
-            {
-                md.Content = "Please enter a valid name!";
-                await md.ShowAsync();
-            }
-            else if (CollegeField.Text.Length == 0)
-            {
-                md.Content = "Please enter your college/university";
-                await md.ShowAsync();
-            }
-            else if (DOBField.Date == DateTime.Now || (DateTime.Now.Year-DOBField.Date.Year) <= 16 )
-            {
-              md.Content = "Must be in college or of college age";
-                await md.ShowAsync();
+                if (_registeredUsers.Any(userInfo => userInfo.UserName == nwUsr.UserName))
+                {
+                    md.Content = "User already exists";
+                    await md.ShowAsync();
+                    return;
+                }
+                _registeredUsers.Add(nwUsr);
             }
             else
             {
-                UserData nwUsr = new UserData();
-                nwUsr.FirstName = FirstNameField.Text;
-                nwUsr.LastName = LastNameField.Text;
-                nwUsr.UserName = UserNameField.Text;
-                nwUsr.Password = PasswordField.Password;
-                nwUsr.DOB = DOBField.Date;
-                nwUsr.College = CollegeField.Text;
-                nwUsr.Gender = _usrGender;
-                if (registeredUsers != null)
-                {
-                    foreach (var UserInfo in registeredUsers)
-                    {
-                        if (UserInfo.UserName == nwUsr.UserName)
-                        {
-                            md.Content = "User already exists";
-                            await md.ShowAsync();
-                            return;
-                        }
-                    }
-                    registeredUsers.Add(nwUsr);
-                }
-                else
-                {
-                    registeredUsers = new List<UserData>();
-                    registeredUsers.Add(nwUsr);
-                }
-                StorageFolder localAppFolder = ApplicationData.Current.LocalFolder;
-                dynamic file;
-                try
-                {
-                    file = await localAppFolder.GetFileAsync("RegisteredUsers.txt");
-                    using (var reader = file.OpenReadAsync())
-                    {
-                        DataContractSerializer serializer = new DataContractSerializer(typeof (List<UserData>));
-                        serializer.WriteObject(reader, registeredUsers);
-                    }
-                }
-                catch (FileNotFoundException)
-                {
-                    file =
-                        await
-                            localAppFolder.CreateFileAsync("RegisteredUsers.txt",
-                                CreationCollisionOption.ReplaceExisting);
-                    using (var reader = await file.OpenReadAsync())
-                    {
-                        DataContractSerializer serializer = new DataContractSerializer(typeof (List<UserData>));
-                        serializer.WriteObject(reader, registeredUsers);
-                    }
-                }
-                finally
-                {
-                    md.Content = "Congrats, you are now registered";
-                    await md.ShowAsync();
-                    this.Frame.Navigate(typeof(MainPage), this);
-                }
+                _registeredUsers = new List<UserData> {nwUsr};
             }
+            AddUserToDb(ApplicationData.Current.LocalFolder);
+            md.Content = "Congrats, you are now registered";
+            await md.ShowAsync();
+            var settings = ApplicationData.Current.LocalSettings;
+            settings.Values["CheckLogin"] = "Login sucess";
+            Frame.Navigate(typeof(PersonalScreen), nwUsr);
+        }
+
+        private async void AddUserToDb(IStorageFolder localAppFolder)
+        {
+            var file =  await localAppFolder.CreateFileAsync("RegisteredUsers.txt",
+                CreationCollisionOption.ReplaceExisting);
+            using (var reader = await file.OpenStreamForWriteAsync())
+            {
+                var serializer = new DataContractSerializer(typeof(List<UserData>));
+                serializer.WriteObject(reader, _registeredUsers);
+
+            }
+        }
+        private string CheckForValidUserData()
+        {
+            if (!Regex.IsMatch(UserNameField.Text.Trim(), @"^[A-Za-z_][a-zA-Z0-9_\s]*$"))
+                return "Improper username";
+            if (PasswordField.Password.Length < 6)
+                return "Password length should be minimum of 6 characters!";
+            if (_usrGender == "")
+                return "Please select gender!";
+            if (FirstNameField.Text.Length == 0 || LastNameField.Text.Length == 0)
+               return "Please enter a valid name!";
+            if (CollegeField.Text.Length == 0)
+                return "Please enter your college/university";
+            if (DOBField.Date == DateTime.Now || (DateTime.Now.Year - DOBField.Date.Year) <= 16)
+               return "Must be in college or of college age";
+            return "valid";
         }
     }
 }

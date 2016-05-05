@@ -1,0 +1,47 @@
+﻿<Page
+    x:Class="No_More_Ramen.PersonalScreen"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:No_More_Ramen.SlideMenuControl"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <local:SlideInMenuContentControl>
+        <local:SlideInMenuContentControl.LeftMenuContent>
+            <Grid Background="Aqua">
+            </Grid>
+        </local:SlideInMenuContentControl.LeftMenuContent>
+        <local:SlideInMenuContentControl.RightMenuContent>
+            <Grid Background="Aqua">
+            </Grid>
+        </local:SlideInMenuContentControl.RightMenuContent>
+        <local:SlideInMenuContentControl.Content>
+            <Grid Background="White" Height="Auto">
+                <TextBlock
+                    Text="Your Recipes"
+                    FontSize="40"
+                    Foreground="Black"
+                    HorizontalAlignment="Center"
+                    Margin="88,25,89,569"
+                    />
+                <ComboBox
+                    Name="SortByComboBox"
+                    SelectionChanged="SortByComboBox_SelectionChanged"
+                    Width="Auto"
+                    Height="Auto"
+                    Margin="10,92,188,358"
+                    PlaceholderText="Order Recipes by:"
+                    Visibility="Visible"
+                    FontSize="15"
+                    Background="DeepSkyBlue"
+                    >
+                    <ComboBoxItem Foreground="Black">Date Added</ComboBoxItem>
+                    <ComboBoxItem Foreground="Black">Recipe Name</ComboBoxItem>
+                    <ComboBoxItem Foreground="Black">Time to Cook</ComboBoxItem>
+                    <ComboBoxItem Foreground="Black">Number of Ingridients</ComboBoxItem>
+                </ComboBox>
+            </Grid>
+        </local:SlideInMenuContentControl.Content>
+    </local:SlideInMenuContentControl>
+</Page>
