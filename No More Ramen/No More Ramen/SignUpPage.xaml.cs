@@ -87,7 +87,7 @@ namespace No_More_Ramen
                 LastName = LastNameField.Text,
                 UserName = UserNameField.Text,
                 Password = PasswordField.Password,
-                Dob = DOBField.Date,
+                Dob = DobField.Date,
                 College = CollegeField.Text,
                 Gender = _usrGender
             };
@@ -108,9 +108,7 @@ namespace No_More_Ramen
             AddUserToDb(ApplicationData.Current.LocalFolder);
             md.Content = "Congrats, you are now registered";
             await md.ShowAsync();
-            var settings = ApplicationData.Current.LocalSettings;
-            settings.Values["CheckLogin"] = "Login sucess";
-            Frame.Navigate(typeof(PersonalScreen), nwUsr);
+            Frame.Navigate(typeof(PersonalScreen), new UserRecipe(nwUsr,null));
         }
 
         private async void AddUserToDb(IStorageFolder localAppFolder)
@@ -136,7 +134,7 @@ namespace No_More_Ramen
                return "Please enter a valid name!";
             if (CollegeField.Text.Length == 0)
                 return "Please enter your college/university";
-            if (DOBField.Date == DateTime.Now || (DateTime.Now.Year - DOBField.Date.Year) <= 16)
+            if (DobField.Date == DateTime.Now || (DateTime.Now.Year - DobField.Date.Year) <= 16)
                return "Must be in college or of college age";
             return "valid";
         }

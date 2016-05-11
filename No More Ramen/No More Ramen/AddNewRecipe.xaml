@@ -1,0 +1,82 @@
+﻿<Page
+    x:Class="No_More_Ramen.AddNewRecipe"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Grid Background="White">
+        <TextBlock
+            Foreground="Black"
+            Text="Add a New Recipe"
+            FontSize="40"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Top"
+            Margin="5"
+            />
+        <TextBlock
+            Foreground="Black"
+            FontSize="20"
+            Text="Recipe Name:" Margin="10,85,255,532"
+            />
+        <TextBox
+            PlaceholderText="Recipe Name"
+            Margin="145,78,24,0" 
+            Height="30"
+            Name="RecipeName"
+            BorderBrush="LightGray"
+            />
+        <TextBlock
+             Foreground="Black"
+            FontSize="20"
+            Text="Time To Cook in Mins:"
+            Margin="10,134,192,472"
+            />
+        <TextBox
+            Foreground="Black"
+            PlaceholderText="Time to cook"
+            Name="TimeToCook"
+            Margin="213,134,70,0" Height="23"
+            BorderBrush="LightGray"
+            />
+        <TextBlock
+            Foreground="Black"
+            FontSize="20"
+            Text="Ingredient List:" Margin="10,173,243,442"
+            />
+        <TextBox
+            Foreground="Black"
+            BorderBrush="LightGray"
+            TextWrapping="Wrap"
+            Name="IngridientList"
+            PlaceholderText="Seperate ingridients by a comma
+            " Margin="25,203,24,0" Height="130"
+            />
+        <TextBlock
+            Foreground="Black"
+            FontSize="20"
+            Text="Cooking Steps:" Margin="10,359,255,251"
+            />
+        <TextBox
+            Foreground="Black"
+            PlaceholderText="Seperate each step by a new line or not."
+            BorderBrush="LightGray"
+            Name="StepsToCook" 
+            Margin="10,394,10,0" Height="138"
+            />
+        <Button
+            Background="Aqua"
+            Content="Submit"
+            Click="SubmitRecipe_OnClick" Margin="25,548,0,14" Height="78" Width="120"
+            />
+        <Button
+            Background="Red"
+            Content="Cancel"
+            Click="Cancel_OnClick" 
+            Margin="238,548,0,14" 
+            Height="78" Width="120"
+            />
+    </Grid>
+</Page>

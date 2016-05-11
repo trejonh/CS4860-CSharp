@@ -29,11 +29,6 @@ namespace No_More_Ramen
 
         private async void MainPage_Loaded(object sender, RoutedEventArgs e)
         {
-            /*var settings = ApplicationData.Current.LocalSettings;
-            if (settings.Values["CheckLogin"] != null)
-                Frame.Navigate(typeof (PersonalScreen), null);
-            else
-            {*/
                 var localAppFolder = ApplicationData.Current.LocalFolder;
                 try
                 {
@@ -45,7 +40,6 @@ namespace No_More_Ramen
                     await localAppFolder.CreateFileAsync("RegisteredUsers.txt",
                         CreationCollisionOption.ReplaceExisting);
                 }
-            //}
         }
 
         private async void LoadRegisteredUsers(IStorageFile file)
@@ -74,19 +68,24 @@ namespace No_More_Ramen
             Frame.Navigate(typeof (SignUpPage), null);
         }
 
+        private UserData FindUser()
+        {
+            return _registeredUsers.FirstOrDefault(usr => usr.UserName == UserName.Text);
+        }
+
         private async void Login_OnClick(object sender, RoutedEventArgs e)
         {
             if (UserName.Text == "" || PassWord.Password == "") return;
-            if (_registeredUsers.Any(user => user.UserName == UserName.Text && user.Password == PassWord.Password))
-            {
-                var settings = ApplicationData.Current.LocalSettings;
-                settings.Values["CheckLogin"] = "Login sucess";
-                Frame.Navigate(typeof (PersonalScreen), UserName.Text);
-            }
-            else
+            if (_registeredUsers == null ||
+                !_registeredUsers.Any(user => user.UserName == UserName.Text && user.Password == PassWord.Password))
             {
                 var md = new MessageDialog("Invalid username/password");
                 await md.ShowAsync();
+            }
+            else
+            {
+                var curUser = FindUser();
+                Frame.Navigate(typeof (PersonalScreen), new UserRecipe(curUser, null));
             }
         }
     }

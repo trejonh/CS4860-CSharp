@@ -1,0 +1,3 @@
+I tried writing unit tests for my app but VS would not let me add a reference to the project.
+Also most of my app relies on UI testing so if i were to do proper testing i feel as though
+UI testing would be more effective in this project. 

@@ -1,13 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.Collections.ObjectModel;
 using System.Linq;
-using System.Runtime.Serialization;
-using System.Xml;
-using Windows.Storage;
-using Windows.UI.Popups;
 using Windows.UI.Xaml;
-using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Navigation;
 using No_More_Ramen.Data;
 
@@ -20,72 +13,32 @@ namespace No_More_Ramen
     /// </summary>
     public sealed partial class PersonalScreen
     {
-        private List<UserData> _registeredUsers;
+        private ObservableCollection<Recipe> _recipes;
+        private UserData _usr; 
         public PersonalScreen()
         {
             InitializeComponent();
             NavigationCacheMode = NavigationCacheMode.Enabled;
-            Loaded += PersonalScreen_Loaded;
+            DataContext = this;
         }
 
-        private async void PersonalScreen_Loaded(object sender, RoutedEventArgs e)
+        protected  override void OnNavigatedTo(NavigationEventArgs e)
         {
-            var localAppFolder = ApplicationData.Current.LocalFolder;
-            try
-            {
-                var file = await localAppFolder.GetFileAsync("RegisteredUsers.txt");
-                LoadRegisteredUsers(file);
-            }
-            catch (FileNotFoundException)
-            {
-                await localAppFolder.CreateFileAsync("RegisteredUsers.txt",
-                    CreationCollisionOption.ReplaceExisting);
-            }
+            var combo = e.Parameter as UserRecipe;
+            _recipes=combo?.Recipes;
+            _usr = combo?.User;
+            var curUserRecipes = _recipes?.Where(recipe => recipe.UserName == _usr.UserName).ToList();
+            RecipeListBox.DataContext = curUserRecipes;
         }
 
-        private async void LoadRegisteredUsers(IStorageFile file)
+        private void AddNewRecipe_Click(object sender, RoutedEventArgs e)
         {
-            using (var reader = await file.OpenReadAsync())
-            {
-                if (reader.Size <= 0) return;
-                var serializer = new DataContractSerializer(typeof(List<UserData>));
-                _registeredUsers =
-                    (List<UserData>)serializer.ReadObject(XmlReader.Create(reader.AsStreamForRead()));
-            }
+            Frame.Navigate(typeof (AddNewRecipe), new UserRecipe(_usr,_recipes));
         }
 
-        protected override void OnNavigatedTo(NavigationEventArgs e)
+        private void ViewAll_Click(object sender, RoutedEventArgs e)
         {
-            /*var param = e.Parameter;
-            var type = e?.Parameter?.GetType();
-            var md = new MessageDialog(type?.FullName);
-            //await md.ShowAsync();
-            if (param is UserData)
-            {
-                UserDetails.DataContext = param;
-                return;
-            }
-            var usr = _registeredUsers?.Select(user => user.UserName == (string) param).First();
-            md.Content = usr?.GetType()?.FullName;
-            await md.ShowAsync();
-            UserDetails.DataContext = usr;*/
-        }
-
-
-
-        private void LeftButtonTapped_Tapped(object sender, TappedRoutedEventArgs e)
-        {
-            //Slidein.GoToMenuState(ActiveState.Left);
-        }
-
-        private void RightButtonTapped_Tapped(object sender, TappedRoutedEventArgs e)
-        {
-            //Slidein.GoToMenuState(ActiveState.Right);
-        }
-
-        private void SortByComboBox_SelectionChanged(object sender, Windows.UI.Xaml.Controls.SelectionChangedEventArgs e)
-        {
-
+            RecipeListBox.DataContext = _recipes;
         }
     }
 }
